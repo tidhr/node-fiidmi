@@ -1,0 +1,23 @@
+{
+  "name": "node-fiidmi",
+  "version": "0.1.0",
+  "description": "Passport Strategy for Fiidmi API",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tidhr/node-fiidmi"
+  },
+  "keywords": [
+    "fiidmi",
+    "pizza",
+    "restaurants"
+  ],
+  "author": "Tidhr <info@tidhr.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tidhr/node-fiidmi/issues"
+  }
+}
