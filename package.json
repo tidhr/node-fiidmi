@@ -17,6 +17,10 @@
   ],
   "author": "Tidhr <info@tidhr.com>",
   "license": "MIT",
+  "dependencies": {
+    "q": "*",
+    "nor-extend": "*"
+  },
   "bugs": {
     "url": "https://github.com/tidhr/node-fiidmi/issues"
   }
