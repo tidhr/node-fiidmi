@@ -19,7 +19,8 @@
   "license": "MIT",
   "dependencies": {
     "q": "*",
-    "nor-extend": "*"
+    "nor-extend": "*",
+	"jsonschema": "*"
   },
   "bugs": {
     "url": "https://github.com/tidhr/node-fiidmi/issues"
