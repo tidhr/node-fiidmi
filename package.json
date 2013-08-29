@@ -1,6 +1,6 @@
 {
   "name": "fiidmi",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Fiidmi API Library for Node.js",
   "main": "lib/index.js",
   "scripts": {
