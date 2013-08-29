@@ -4,7 +4,7 @@
   "description": "Passport Strategy for Fiidmi API",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -R spec tests/test-*.js"
   },
   "repository": {
     "type": "git",
@@ -19,8 +19,13 @@
   "license": "MIT",
   "dependencies": {
     "q": "*",
+    "nor-is": "*",
     "nor-extend": "*",
 	"jsonschema": "*"
+  },
+  "devDependencies": {
+    "lint": "*",
+    "mocha": "*"
   },
   "bugs": {
     "url": "https://github.com/tidhr/node-fiidmi/issues"
