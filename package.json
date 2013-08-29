@@ -21,7 +21,7 @@
     "q": "*",
     "nor-is": "*",
     "nor-extend": "*",
-	"jsonschema": "*"
+	"jayschema": "*"
   },
   "devDependencies": {
     "lint": "*",
