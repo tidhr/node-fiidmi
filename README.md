@@ -61,14 +61,36 @@ You can read more about these chained promises from [`nor-extend`](https://githu
 API Reference
 -------------
 
-The current [Fiidmi API](http://fiidmi.fi/documentation/) release we use is version 3.3.
+#### `Fiidmi.prototype.enableAutoSessionId({bool})`
 
-Calls are identical with the API name except that '/' and '_' are translated like this:
+When set to `true` the client will automatically save the session_id from a call to `.accountLogin()`.
+
+Please be careful not to share instances of `Fiidmi` connections between different client sessions!
+
+#### `Fiidmi.prototype.setSessionId(session_id)`
+
+Saves `session_id` in the instance.
+
+Please be careful not to share instances of `Fiidmi` connections between different client sessions!
+
+#### `Fiidmi.prototype.clearSessionId()`
+
+Clears `session_id` from the instance.
+
+#### `Fiidmi.prototype.setApiKey(api_key, secret)`
+
+Sets `api_key` and `secret` for the instance.
+
+#### Other Fiidmi calls
+
+The current [Fiidmi API](http://fiidmi.fi/documentation/) we use is version 3.3.
+
+Calls are identical with the API except that '/' and '_' are translated like this:
 
 * `/customer/restaurants/delete` -> `.customerRestaurantsDelete([opts])`
 * `/customer/order_history/list` -> `.customerOrderHistoryList([opts])`
 
-Every call will return with a chainable [promise](https://github.com/sendanor/nor-extend#nor-extend) of the instance of API itself, where you can use `.fetch()` to get 
+Every call will return with [a chainable promise](https://github.com/sendanor/nor-extend#nor-extend) of the instance of API itself, where you can use `.fetch()` to get 
 values from the operations.
 
 So if you call `p.servicePolicy()` it is same as `p.then(function(obj) { return obj.servicePolicy(); })`.
