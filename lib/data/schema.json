@@ -1,0 +1,214 @@
+{
+	"title": "Restaurant data object",
+	"type": "object",
+	"oneOf": [
+		{ "$ref": "#/definitions/restaurant" },
+	],
+	"definitions": {
+		"integer": {
+			"type": "string",
+			"pattern": "^[0-9]+$"
+		},
+		"double": {
+			"type": "string",
+			"pattern": "^[0-9]+\.[0-9]+$"
+		},
+		"restaurant": {
+			"type": "object",
+			"properties": {
+				"id": { "$ref": "#/definitions/integer" },
+				"name": { "type": "string" },
+				"regular_cash_enabled": { "type": "boolean" },
+				"address": { "$ref": "#/definitions/address" },
+				"payment_methods": {
+					"type": "object",
+					"patternProperties": {
+						"^(1|2|4|8|16|32|64|128|256|512|1024|2048|4096|8192|16384|32768|65536|131072|262144|524288|1048576|2097152|4194304|8388608|16777216|33554432|67108864|134217728|268435456|536870912|1073741824|2147483648)$": {
+							"type": "object",
+							"properties": {
+								"slug": { "type": "string" },
+								"name": { "type": "string" }
+							}
+						}
+					}
+				},
+				"average_delivery_time": { "$ref": "#/definitions/integer" },
+				"average_fetch_time": { "$ref": "#/definitions/integer" },
+				"small_order_additional_fee": { "$ref": "#/definitions/double" },
+				"small_order_fee_limit": { "$ref": "#/definitions/double" },
+				"has_delivery": { "$ref": "#/definitions/integer" },
+				"delivery_range": { "$ref": "#/definitions/double" },
+				"delivery_possible_over": { "$ref": "#/definitions/double" },
+				"delivery_free_over": { "$ref": "#/definitions/double" },
+				"delivery_fee": { "$ref": "#/definitions/double" },
+				"changeable_ingredients_amount": { "$ref": "#/definitions/integer" },
+				"available": { "$ref": "#/definitions/integer" },
+				"lunch_price_in_online_orders": { "type": "boolean" },
+				"categories": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/category" }
+				},
+				"delivery_methods": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/delivery_method" }
+				},
+				"ingredient_groups": {
+					"type": "object",
+					"patternProperties": {
+						"^[0-9]+$": {
+							"$ref": "#/definitions/ingredient_group"
+						}
+					}
+				},
+				"description": { "type": "string" },
+			}
+		},
+		"address": {
+			"type": "object",
+			"properties": {
+				"address": { "type": "string" },
+				"phone_number": { "type": "string" },
+				"postal_code": { "type": "string" },
+				"city": { "type": "string" },
+				"latitude": { "type": "string" },
+				"longitude": { "type": "string" }
+			}
+		},
+		"category": {
+			"id": { "$ref": "#/definitions/integer" },
+			"name": { "type": "string" },
+			"running_number": { "$ref": "#/definitions/integer" },
+			"description": { "type": "string" },
+			"products": {
+				"type": "array",
+				"items": { "$ref": "#/definitions/product"}
+			}
+		},
+		"delivery_method": {
+			"id": { "$ref": "#/definitions/integer" },
+			"name": { "type": "string" },
+			"priority": { "$ref": "#/definitions/integer" },
+			"times": {
+				"type": "array",
+				"items": {
+					"$ref": "#/definitions/delivery_time"
+				}
+			}
+		},
+		"time": {
+			"type": "string",
+			"pattern": "^[0-9]+\.[0-9]+$"
+		},
+		"weekday": {
+			"type": "string",
+			"pattern": "^[1-7]$"
+		},
+		"price": {
+			"type": "string",
+			"pattern": "^[0-9]+\.[0-9]+$"
+		},
+		"delivery_time": {
+			"type": "object",
+			"properties": {
+				"start_time": { "$ref": "#/definitions/time" },
+				"end_time": { "$ref": "#/definitions/time" },
+				"weekday": { "$ref": "#/definitions/weekday" },
+				"additional_price": { "$ref": "#/definitions/price" },
+				"additional_price_start_time": { "$ref": "#/definitions/time" },
+				"additional_price_end_time": { "$ref": "#/definitions/time" }
+			}
+		},
+		"ingredient_group": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/ingredient" }
+		},
+		"product": {
+			"type": "object",
+			"properties": {
+				"id": { "$ref": "#/definitions/integer" },
+				"group_id": { "$ref": "#/definitions/integer" },
+				"name": { "type": "string"},
+				"description": { "type": "string" },
+				"menu_number": { "type": "string" },
+				"image": { "type": "string" },
+				"side_dishes": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/side_dish" }
+				},
+				"lunch_time_side_dishes": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/side_dish" }
+				},
+				"ingredients": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/integer" }
+				},
+				"addable_ingredients": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/integer" }
+				},
+				"addable_free_ingredients": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/integer" }
+				},
+				"changeable_ingredients": {
+					"type": "object",
+					"patternProperties": {
+						"^[0-9]+$": {
+							"type": "array",
+							"items": { "type": "number" }
+						}
+					}
+				},
+				"variants": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/variant" }
+				}
+			}
+		},
+		"ingredient": {
+			"type": "object",
+			"properties": {
+				"id": { "$ref": "#/definitions/integer" },
+				"name": { "type": "string" },
+				"price": { "$ref": "#/definitions/double" },
+				"is_free": { "$ref": "#/definitions/integer" },
+				"choosable": { "$ref": "#/definitions/integer" }
+			}
+		},
+		"side_dish": {
+			"type": "object",
+			"properties": {
+				"id": { "$ref": "#/definitions/integer" },
+				"name": { "type": "string" },
+				"size": { "type": "string" }
+			}
+		},
+		"variant": {
+			"type": "object",
+			"properties": {
+				"id": { "$ref": "#/definitions/integer" },
+				"size": { "type": "string" },
+				"price": { "$ref": "#/definitions/double" },
+				"lunch_price": { "$ref": "#/definitions/double" },
+				"ingredient_pricing_factor": { "$ref": "#/definitions/double" },
+				"ingredient_pricing_sum": { "$ref": "#/definitions/double" },
+				"extras": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/variant_extra"
+					}
+				},
+			}
+		},
+		"variant_extra": {
+			"type": "object",
+			"properties": {
+				"id": { "$ref": "#/definitions/integer" },
+				"product_id": { "$ref": "#/definitions/integer" },
+				"name": { "type": "string" },
+				"price": { "$ref": "#/definitions/double" }
+			}
+		}
+	}
+}
