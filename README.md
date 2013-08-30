@@ -22,7 +22,7 @@ var api = new Fiidmi({'hostname':'testapi.fiidmi.fi'});
 
 #### Single API call
 
-Then API calls can be done like this:
+API calls can be done like this:
 
 ```javascript
 api.servicePolicy({'language':'fi'}).then(function(api) {
@@ -43,7 +43,7 @@ api.servicePolicy({'language':'fi'}).then(function(api) {
 
 #### Chaining multiple API calls
 
-Then API calls can chained like this:
+Multiple API calls can chained like this:
 
 ```javascript
 api.servicePolicy({'language':'fi'}).servicePolicy({'language':'en'}).then(function(api) {
