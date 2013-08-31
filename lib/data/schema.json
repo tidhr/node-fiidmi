@@ -2,7 +2,7 @@
 	"title": "Restaurant data object",
 	"type": "object",
 	"oneOf": [
-		{ "$ref": "#/definitions/restaurant" },
+		{ "$ref": "#/definitions/restaurant" }
 	],
 	"definitions": {
 		"integer": {
@@ -10,8 +10,8 @@
 			"pattern": "^[0-9]+$"
 		},
 		"double": {
-			"type": "string",
-			"pattern": "^[0-9]+\.[0-9]+$"
+			"type":"string",
+			"pattern":"^[0-9]+\\.[0-9]+$"
 		},
 		"restaurant": {
 			"type": "object",
@@ -60,7 +60,7 @@
 						}
 					}
 				},
-				"description": { "type": "string" },
+				"description": { "type": "string" }
 			}
 		},
 		"address": {
@@ -97,7 +97,7 @@
 		},
 		"time": {
 			"type": "string",
-			"pattern": "^[0-9]+\.[0-9]+$"
+			"pattern": "^[0-9]+\\.[0-9]+$"
 		},
 		"weekday": {
 			"type": "string",
@@ -105,7 +105,7 @@
 		},
 		"price": {
 			"type": "string",
-			"pattern": "^[0-9]+\.[0-9]+$"
+			"pattern": "^[0-9]+\\.[0-9]+$"
 		},
 		"delivery_time": {
 			"type": "object",
@@ -198,7 +198,7 @@
 					"items": {
 						"$ref": "#/definitions/variant_extra"
 					}
-				},
+				}
 			}
 		},
 		"variant_extra": {
