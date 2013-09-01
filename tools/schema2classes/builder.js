@@ -38,6 +38,11 @@ mod.build = function(opts) {
 	// This is a cache for built constructors
 	var constructors = {};
 
+	/** Escapes function names */
+	function escape_func_name(str) {
+		return str.replace(/[^a-zA-Z0-9_]+/g, "_");
+	}
+
 	/** Returns true if `str` starts with same string as `what` */
 	function string_starts_with(str, what) {
 		return (str.substr(0, what.length) === what) ? true : false;
@@ -70,7 +75,7 @@ mod.build = function(opts) {
 			// FIXME: Here we should enable optional custom code (for transformations etc)
 		}
 
-		var Type = (new Function('_constructor', 'return function '+ type_name +' (opts) { _constructor.call(this); };'))(_constructor);
+		var Type = (new Function('_constructor', 'return function '+ escape_func_name(type_name) +' (opts) { _constructor.call(this); };'))(_constructor);
 
 		util.inherits(Type, ParentType);
 
