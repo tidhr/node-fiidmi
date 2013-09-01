@@ -111,9 +111,14 @@ mod.build = function(build_opts) {
 		constructors[type_name] = Type;
 
 		// User-defined methods
-		if(Object.prototype.hasOwnProperty.call(_user_defined_methods, type_name)) {
-			_user_defined_methods[type_name].call({}, Type);
+		function post_user_defines(context) {
+			if(Object.prototype.hasOwnProperty.call(_user_defined_methods, type_name)) {
+				_user_defined_methods[type_name].call(context, Type, context);
+			}
 		}
+		
+		post_user_defines({'constructors':constructors, 'schema':_schema});
+
 		return constructors[type_name];
 	}
 	
