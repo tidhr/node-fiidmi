@@ -1,10 +1,29 @@
 #!/usr/bin/env node
 /* Convert JSON files to JavaScript Object Constructors using JSON Schema */
 
-var Q = require('q');
 var is = require('nor-is');
 var util = require('util');
-var fs = require('nor-fs');
+var builder = require('./builder.js');
+
+/** Read schema from file */
+function read_schema_file(opts) {
+	var Q = require('q');
+	var fs = require('nor-fs');
+	opts = opts || {};
+	var schema_file = opts.schema;
+	var p = Q.fcall(function() {
+		if(!schema_file) { throw new TypeError("bad argument: opts.schema"); }
+		return fs.exists(schema_file).then(function(e){ if(e){return fs.stat(schema_file);} });
+	}).then(function (schema_stat) {
+		if((!schema_stat) || (!schema_stat.isFile()) ) {
+			throw new TypeError("Schema not file: " + schema_file);
+		}
+		return fs.readFile(schema_file, {'encoding':'utf8'});
+	}).then(function(data) {
+		return JSON.parse(data);
+	});
+	return p;
+}
 
 /** Check if module exists */
 function module_exists(name) {
@@ -39,44 +58,11 @@ function get_argv() {
 	return argv;
 }
 
-/** Builds Custom JavaScript Object Library from schema file */
-function build_classes(opts) {
-	opts = opts || {};
-	var schema_file = opts.schema;
-	var p = Q.fcall(function() {
-		if(!schema_file) { throw new TypeError("bad argument: opts.schema"); }
-		return fs.exists(schema_file).then(function(e){ if(e){return fs.stat(schema_file);} });
-	}).then(function (schema_stat) {
-		if((!schema_stat) || (!schema_stat.isFile()) ) {
-			throw new TypeError("Schema not file: " + schema_file);
-		}
-		return fs.readFile(schema_file, {'encoding':'utf8'});
-	}).then(function(data) {
-		var schema = JSON.parse(data);
-		
-		if(!is.obj(schema)) { throw new TypeError('schema is not valid'); }
-		if(!is.obj(schema.definitions)) { throw new TypeError('schema is missing definitions'); }
-		
-		var mod = {};
-		
-		Object.keys(schema.definitions).forEach(function(type_name) {
-			function Type(opts) {
-				if(!(this instanceof Type)) {
-					return new Type(opts);
-				}
-				opts = opts || {};
-			};
-			mod[type_name] = Type;
-		});
-
-		return mod;
-	});
-	return p;
-}
-
 /* The utility */
 var argv = get_argv();
-build_classes(argv).then(function(mod) {
+read_schema_file(argv).then(function(schema) {
+	return builder.build({'schema': schema});
+}).then(function(mod) {
 	util.debug( util.inspect( mod ));
 	console.log("All done!");
 }).fail(function(err) {

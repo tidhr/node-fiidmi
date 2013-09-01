@@ -30,7 +30,8 @@
   },
   "optionalDependencies": {
     "optimist": "*",
-    "prettified": "*"
+    "prettified": "*",
+    "tv4": "*"
   },
   "bugs": {
     "url": "https://github.com/tidhr/node-fiidmi/issues"
