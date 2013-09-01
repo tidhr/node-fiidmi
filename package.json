@@ -22,7 +22,8 @@
     "nor-is": "*",
     "nor-extend": "*",
     "nor-fs": "*",
-	"jayschema": "*"
+	"jayschema": "*",
+	"json-schema-orm": "*"
   },
   "devDependencies": {
     "lint": "*",

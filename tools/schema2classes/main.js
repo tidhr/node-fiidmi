@@ -5,7 +5,7 @@
 
 var is = require('nor-is');
 var util = require('util');
-var builder = require('./builder.js');
+var orm = require('json-schema-orm');
 
 /** Read schema from file */
 function read_schema_file(opts) {
@@ -63,9 +63,10 @@ function get_argv() {
 /* The utility */
 var argv = get_argv();
 read_schema_file(argv).then(function(schema) {
-	return builder.build({'schema': schema});
+	return orm.build({'schema': schema});
 }).then(function(mod) {
 	util.debug( util.inspect( mod ));
+	//util.debug( mod.Restaurant.toSource() );
 	console.log("All done!");
 }).fail(function(err) {
 	if(module_exists('prettified')) {

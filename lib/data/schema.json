@@ -1,26 +1,22 @@
 {
 	"title": "Restaurant data object",
-	"type": "object",
 	"oneOf": [
 		{ "$ref": "#/definitions/Restaurant" }
 	],
 	"definitions": {
 		"Integer": {
-			"type": "object",
 			"oneOf": [
 				{"type": "string", "pattern": "^[0-9]+$"},
 				{"type":"number"}
 			]
 		},
 		"Double": {
-			"type": "object",
 			"oneOf": [
 				{"type":"string", "pattern":"^[0-9]+\\.[0-9]+$"},
 				{"type":"number"}
 			]
 		},
 		"Boolean": {
-			"type": "object",
 			"oneOf": [
 				{ "type": "string", "pattern": "^[01]$"},
 				{ "type": "boolean" }
