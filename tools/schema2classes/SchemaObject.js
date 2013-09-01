@@ -21,6 +21,12 @@ function SchemaObject(opts) {
 	this._data = opts;
 };
 
+/** Set the primitive value of the object */
+SchemaObject.prototype._setValueOf = function(data) {
+	this._data = data;
+	return this;
+};
+
 /** Get the primitive value of the object */
 SchemaObject.prototype.valueOf = function() {
 	return this._data;

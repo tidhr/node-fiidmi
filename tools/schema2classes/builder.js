@@ -28,12 +28,16 @@ mod.read = function(opts) {
 };
 
 /** Build Custom JavaScript constructors using JSON schema definitions */
-mod.build = function(opts) {
-	opts = opts || {};
-	var schema = opts.schema;
+mod.build = function(build_opts) {
+	build_opts = build_opts || {};
+	var _schema = build_opts.schema;
+
+	// User defined customizations
+	var _custom = build_opts.constructors || {};
+	var _custom_constructors = build_opts.constructors || {};
 		
-	if(!is.obj(schema)) { throw new TypeError('schema is not valid'); }
-	if(!is.obj(schema.definitions)) { throw new TypeError('schema is missing definitions'); }
+	if(!is.obj(_schema)) { throw new TypeError('schema is not valid'); }
+	if(!is.obj(_schema.definitions)) { throw new TypeError('schema is missing definitions'); }
 
 	// This is a cache for built constructors
 	var constructors = {};
@@ -55,27 +59,42 @@ mod.build = function(opts) {
 			return constructors[type_name];
 		}
 		
-		if(!( Object.prototype.hasOwnProperty.call(schema.definitions, type_name) && is.def(schema.definitions[type_name]) )) {
+		if(!( Object.prototype.hasOwnProperty.call(_schema.definitions, type_name) && is.def(_schema.definitions[type_name]) )) {
 			throw new TypeError("No definition for " + type_name);
 		}
-		var definition = schema.definitions[type_name];
+		var definition = _schema.definitions[type_name];
 
-		// FIXME: If the definition is directly a $ref to another object, we should use it as a base constructor instead of SchemaObject.
+		// ParentType is either SchemaObject or another definition
 		var ParentType = SchemaObject;
 		if( is.obj(definition) && is.def(definition['$ref']) && string_starts_with(definition['$ref'], '#/definitions/') ) {
 			ParentType = create_constructor( definition['$ref'].split('/').slice(2).join('/') );
 		}
 
-		// FIXME: If a type has $refs, we should create a copy which defines all those $refs.
+		// FIXME: If a type has $refs, we should create a copy of schema which defines all those $refs.
+		// Currently just copies schema and changes it to point our definition. Not ideal solution.
+		var copy_definition = JSON.parse(JSON.stringify(_schema));
+		_schema.oneOf = [{"$ref": '#/definitions/'+type_name }];
 
+		/* This is our real constructor which will be called in `new Function()` */
 		function _constructor(opts) {
+			var tmp;
+			
 			ParentType.call(this, opts);
 			if(!SchemaObject.valid(this, definition)) { throw new TypeError("Options are not valid"); }
+
 			// FIXME: Here we should enable optional custom code (for transformations etc)
+			if(Object.prototype.hasOwnProperty.call(_custom_constructors, type_name)) {
+				tmp = _custom_constructors[type_name].call(this, opts);
+				if(is.def(tmp)) {
+					SchemaObject.prototype._setValueOf.call(this, tmp);
+				}
+			}
+
 		}
 
 		var func_name = escape_func_name(type_name);
 
+		// JavaScript does not support better way to change function names...
 		var code = [
 			'function '+func_name+' (opts) {',
 			'	if(!(this instanceof '+func_name+')) {',
@@ -93,7 +112,7 @@ mod.build = function(opts) {
 		return constructors[type_name];
 	}
 	
-	Object.keys(schema.definitions).forEach(create_constructor);
+	Object.keys(_schema.definitions).forEach(create_constructor);
 
 	return constructors;
 };
