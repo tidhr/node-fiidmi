@@ -21,11 +21,16 @@
     "q": "*",
     "nor-is": "*",
     "nor-extend": "*",
+    "nor-fs": "*",
 	"jayschema": "*"
   },
   "devDependencies": {
     "lint": "*",
     "mocha": "*"
+  },
+  "optionalDependencies": {
+    "optimist": "*",
+    "prettified": "*"
   },
   "bugs": {
     "url": "https://github.com/tidhr/node-fiidmi/issues"
