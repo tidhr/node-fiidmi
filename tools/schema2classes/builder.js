@@ -33,9 +33,10 @@ mod.build = function(build_opts) {
 	var _schema = build_opts.schema;
 
 	// User defined customizations
-	var _custom = build_opts.constructors || {};
-	var _custom_constructors = build_opts.constructors || {};
-		
+	var _user_defined = build_opts.orm || {};
+	var _user_defined_constructors = _user_defined.constructors || {};
+	var _user_defined_methods = _user_defined.methods || {};
+	
 	if(!is.obj(_schema)) { throw new TypeError('schema is not valid'); }
 	if(!is.obj(_schema.definitions)) { throw new TypeError('schema is missing definitions'); }
 
@@ -82,9 +83,8 @@ mod.build = function(build_opts) {
 			ParentType.call(this, opts);
 			if(!SchemaObject.valid(this, definition)) { throw new TypeError("Options are not valid"); }
 
-			// FIXME: Here we should enable optional custom code (for transformations etc)
-			if(Object.prototype.hasOwnProperty.call(_custom_constructors, type_name)) {
-				tmp = _custom_constructors[type_name].call(this, opts);
+			if(Object.prototype.hasOwnProperty.call(_user_defined_constructors, type_name)) {
+				tmp = _user_defined_constructors[type_name].call(this, opts);
 				if(is.def(tmp)) {
 					SchemaObject.prototype._setValueOf.call(this, tmp);
 				}
@@ -109,6 +109,11 @@ mod.build = function(build_opts) {
 		util.inherits(Type, ParentType);
 
 		constructors[type_name] = Type;
+
+		// User-defined methods
+		if(Object.prototype.hasOwnProperty.call(_user_defined_methods, type_name)) {
+			_user_defined_methods[type_name].call({}, Type);
+		}
 		return constructors[type_name];
 	}
 	
