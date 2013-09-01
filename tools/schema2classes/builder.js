@@ -68,14 +68,24 @@ mod.build = function(opts) {
 
 		// FIXME: If a type has $refs, we should create a copy which defines all those $refs.
 
-		function _constructor() {
-			if(!(this instanceof Type)) { return new Type(opts); }
+		function _constructor(opts) {
 			ParentType.call(this, opts);
 			if(!SchemaObject.valid(this, definition)) { throw new TypeError("Options are not valid"); }
 			// FIXME: Here we should enable optional custom code (for transformations etc)
 		}
 
-		var Type = (new Function('_constructor', 'return function '+ escape_func_name(type_name) +' (opts) { _constructor.call(this); };'))(_constructor);
+		var func_name = escape_func_name(type_name);
+
+		var code = [
+			'function '+func_name+' (opts) {',
+			'	if(!(this instanceof '+func_name+')) {',
+			'		return new '+func_name+'(opts);',
+			'	};',
+			'	_constructor.call(this, opts);',
+			'};'
+		];
+		
+		var Type = (new Function('_constructor', 'return '+code.join('\n')))(_constructor);
 
 		util.inherits(Type, ParentType);
 
