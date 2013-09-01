@@ -1,4 +1,5 @@
 /* Convert JSON files to JavaScript Object Constructors using JSON Schema */
+"use strict";
 
 var mod = module.exports = {};
 
@@ -33,28 +34,53 @@ mod.build = function(opts) {
 		
 	if(!is.obj(schema)) { throw new TypeError('schema is not valid'); }
 	if(!is.obj(schema.definitions)) { throw new TypeError('schema is missing definitions'); }
+
+	// This is a cache for built constructors
+	var constructors = {};
+
+	/** Returns true if `str` starts with same string as `what` */
+	function string_starts_with(str, what) {
+		return (str.substr(0, what.length) === what) ? true : false;
+	}
+
+	/** Creates a new constructor unless it's created already */
+	function create_constructor(type_name) {
 		
-	var mod = {};
+		if(Object.prototype.hasOwnProperty.call(constructors, type_name)) {
+			return constructors[type_name];
+		}
 		
-	Object.keys(schema.definitions).forEach(function(type_name) {
+		if(!( Object.prototype.hasOwnProperty.call(schema.definitions, type_name) && is.def(schema.definitions[type_name]) )) {
+			throw new TypeError("No definition for " + type_name);
+		}
+		var definition = schema.definitions[type_name];
+
+		// FIXME: If the definition is directly a $ref to another object, we should use it as a base constructor instead of SchemaObject.
+		var ParentType = SchemaObject;
+		if( is.obj(definition) && is.def(definition['$ref']) && string_starts_with(definition['$ref'], '#/definitions/') ) {
+			ParentType = create_constructor( definition['$ref'].split('/').slice(2).join('/') );
+		}
 
 		// FIXME: If a type has $refs, we should create a copy which defines all those $refs.
-		var type_schema = schema.definitions[type_name];
 
-		function Type(opts) {
-			if(!(this instanceof Type)) {
-				return new Type(opts);
-			}
-			SchemaObject.call(this, opts, type_schema );
+		function _constructor() {
+			if(!(this instanceof Type)) { return new Type(opts); }
+			ParentType.call(this, opts);
+			if(!SchemaObject.valid(this, definition)) { throw new TypeError("Options are not valid"); }
+			// FIXME: Here we should enable optional custom code (for transformations etc)
+		}
 
-			// FIXME: Here we should transform 
-		};
-		util.inherits(Type, SchemaObject);
+		var Type = (new Function('_constructor', 'return function '+ type_name +' (opts) { _constructor.call(this); };'))(_constructor);
 
-		mod[type_name] = Type;
-	});
+		util.inherits(Type, ParentType);
 
-	return mod;
+		constructors[type_name] = Type;
+		return constructors[type_name];
+	}
+	
+	Object.keys(schema.definitions).forEach(create_constructor);
+
+	return constructors;
 };
 
 /* EOF */

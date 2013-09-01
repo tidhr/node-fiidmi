@@ -1,3 +1,5 @@
+"use strict";
+
 /* Convert JSON files to JavaScript Object Constructors using JSON Schema */
 
 var tv4 = require('tv4');
@@ -5,17 +7,17 @@ var is = require('nor-is');
 var util = require('util');
 
 /** Base constructor */
-function SchemaObject(opts, schema) {
+function SchemaObject(opts) {
 	if(!(this instanceof SchemaObject)) {
 		return new SchemaObject(opts);
 	}
-	if(!schema) { throw new TypeError("schema not set"); }
+	//if(!schema) { throw new TypeError("schema not set"); }
 
 	// Validate using schema
-	var result = tv4.validateResult(opts, schema);
-	if(!result.valid) { throw new TypeError("Options are not valid"); }
+	//var result = tv4.validateResult(opts, schema);
+	//if(!result.valid) { throw new TypeError("Options are not valid"); }
 
-	this._schema = schema;
+	//this._schema = schema;
 	this._data = opts;
 };
 
@@ -32,15 +34,15 @@ SchemaObject.prototype.toString = function() {
 /** Validates the object
  * @returns {object} An object like `{"valid": false, "error": {...}, "missing": [...]}`
  */
-SchemaObject.prototype.validate = function() {
-	return tv4.validateResult(self.valueOf(), this._schema);
+SchemaObject.validate = function(self, schema) {
+	return tv4.validateResult( (self instanceof SchemaObject) ? self.valueOf() : self, schema);
 };
 
 /** Returns true if the object is valid, otherwise false.
  * @returns {boolean} Result of validation.
  */
-SchemaObject.prototype.valid = function() {
-	return this.validate().valid;
+SchemaObject.valid = function(self, schema) {
+	return SchemaObject.validate(self, schema).valid;
 };
 
 // Exports

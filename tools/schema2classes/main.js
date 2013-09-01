@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+"use strict";
+
 /* Convert JSON files to JavaScript Object Constructors using JSON Schema */
 
 var is = require('nor-is');
